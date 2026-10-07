@@ -1,0 +1,88 @@
+module Base
+{
+    template vehicle DAMN67commando { /* */ }
+    template vehicle DAMN67commandoBurnt { /* */ }
+    template vehicle DAMN67commandoPolice { /* */ }
+    template vehicle DAMN67commandoT50 { /* */ }
+
+    template vehicle KI5CRStabilizerB16
+    {
+        part TireRearLeft
+        {
+            model stabstab
+            {
+                file = KI5campersWheelX,
+            }
+
+            category = nodisplay,
+            itemType = Base.OldTire,
+            durability = 5,
+            wheel = RearLeft,
+            container
+            {
+                test = Vehicles.ContainerAccess.Tire,
+                contentType = Air,
+            }
+            table install
+            {
+                time = 100,
+                skills = Mechanics:1,
+                test = Vehicles.InstallTest.Default,
+                complete = Vehicles.InstallComplete.Tire,
+            }
+            table uninstall
+            {
+                time = 100,
+                skills = Mechanics:1,
+                test = Vehicles.UninstallTest.Default,
+                complete = Vehicles.UninstallComplete.Tire,
+            }
+            lua
+            {
+                create = Vehicles.Create.Tire,
+                init = Vehicles.Init.Tire,
+                checkOperate = Vehicles.CheckOperate.Tire,
+                update = Vehicles.Update.Tire,
+            }
+        }
+
+        part TireRearRight
+        {
+            model stabstab
+            {
+                file = KI5campersWheelX,
+            }
+
+            category = nodisplay,
+            itemType = Base.OldTire,
+            durability = 5,
+            wheel = RearRight,
+            container
+            {
+                test = Vehicles.ContainerAccess.Tire,
+                contentType = Air,
+            }
+            table install
+            {
+                time = 100,
+                skills = Mechanics:1,
+                test = Vehicles.InstallTest.Default,
+                complete = Vehicles.InstallComplete.Tire,
+            }
+            table uninstall
+            {
+                time = 100,
+                skills = Mechanics:1,
+                test = Vehicles.UninstallTest.Default,
+                complete = Vehicles.UninstallComplete.Tire,
+            }
+            lua
+            {
+                create = Vehicles.Create.Tire,
+                init = Vehicles.Init.Tire,
+                checkOperate = Vehicles.CheckOperate.Tire,
+                update = Vehicles.Update.Tire,
+            }
+        }
+    }
+}
