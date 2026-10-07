@@ -14,6 +14,7 @@ $OverlayName = 'PZ 42.21 Multiplayer Compatibility Overlay'
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $MapPath = Join-Path $Here 'PZ-B42.21-MP-OverlayMap.json'
 $AliasPath = Join-Path $Here 'PZ42MPCompat_aliases.txt'
+$TransformPath = Join-Path $Here 'PZ42MPCompat-Transforms.ps1'
 $UserZomboid = Join-Path $env:USERPROFILE 'Zomboid'
 $OverlayBase = Join-Path $UserZomboid ('mods\' + $OverlayId)
 $OverlayRoot = Join-Path $OverlayBase $TargetVersion
@@ -21,6 +22,8 @@ $BackupRoot = Join-Path $UserZomboid 'PZ42MPOverlayBackup'
 
 if (!(Test-Path -LiteralPath $MapPath)) { throw "Missing overlay map: $MapPath" }
 if (!(Test-Path -LiteralPath $AliasPath)) { throw "Missing custom alias file: $AliasPath" }
+if (!(Test-Path -LiteralPath $TransformPath)) { throw "Missing overlay transforms: $TransformPath" }
+. $TransformPath
 
 function Write-S([string]$Text,[ConsoleColor]$Color=[ConsoleColor]::Gray){ Write-Host $Text -ForegroundColor $Color }
 
@@ -44,7 +47,7 @@ $WorkshopRoot = Join-Path $SteamRoot 'steamapps\workshop\content\108600'
 if(!(Test-Path -LiteralPath $WorkshopRoot)){throw "Project Zomboid Workshop root not found: $WorkshopRoot"}
 
 $Map = Get-Content -LiteralPath $MapPath -Raw | ConvertFrom-Json
-if($Map.Count -ne 48){throw "Expected 48 overlay source mappings, found $($Map.Count)."}
+if($Map.Count -ne 52){throw "Expected 52 overlay source mappings, found $($Map.Count)."}
 
 function Get-SourcePath($Entry){
     Join-Path $WorkshopRoot (Join-Path ([string]$Entry.WorkshopId) (Join-Path 'mods' (Join-Path ([string]$Entry.ModFolder) (Join-Path ([string]$Entry.LoadRoot) ([string]$Entry.Relative)))))
@@ -82,7 +85,7 @@ $Profiles = @(Get-ServerProfiles)
 Write-S ''
 Write-S "PZ B42.21 multiplayer overlay - $Mode" Cyan
 Write-S "Workshop root: $WorkshopRoot"
-Write-S ("Mapped source files: {0}/48" -f $Sources.Count)
+Write-S ("Mapped source files: {0}/52" -f $Sources.Count)
 Write-S ("Relevant server profiles: {0}" -f $Profiles.Count)
 Write-S ("Overlay target: {0}" -f $OverlayRoot)
 if($Missing.Count){
@@ -93,14 +96,17 @@ if($Missing.Count){
 function Test-Overlay {
     if(!(Test-Path -LiteralPath $OverlayRoot)){return $false}
     $files=@(Get-ChildItem -LiteralPath $OverlayRoot -Recurse -File -ErrorAction SilentlyContinue)
-    if($files.Count -ne 50){return $false}
+    if($files.Count -ne 54){return $false}
     $info=Join-Path $OverlayRoot 'mod.info'
     $alias=Join-Path $OverlayRoot 'media\scripts\PZ42MPCompat_aliases.txt'
     if(!(Test-Path $info) -or !(Test-Path $alias)){return $false}
     foreach($s in $Sources){
         $dst=$s.Destination
         if(!(Test-Path -LiteralPath $dst)){return $false}
-        if((Get-FileHash -LiteralPath $s.Source -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash){return $false}
+        $sourceText=[IO.File]::ReadAllText($s.Source)
+        $expected=Convert-PZ42MPCompatContent ([string]$s.Entry.Relative) $sourceText
+        $actual=[IO.File]::ReadAllText($dst)
+        if($expected -cne $actual){return $false}
     }
     if((Get-FileHash -LiteralPath $AliasPath -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $alias -Algorithm SHA256).Hash){return $false}
     $true
@@ -192,7 +198,13 @@ New-Item -ItemType Directory -Path $OverlayRoot -Force | Out-Null
 foreach($s in $Sources){
     $parent=Split-Path $s.Destination -Parent
     if(!(Test-Path -LiteralPath $parent)){New-Item -ItemType Directory -Path $parent -Force | Out-Null}
-    Copy-Item -LiteralPath $s.Source -Destination $s.Destination -Force
+    $sourceText=[IO.File]::ReadAllText($s.Source)
+    $converted=Convert-PZ42MPCompatContent ([string]$s.Entry.Relative) $sourceText
+    if($converted -ceq $sourceText){
+        Copy-Item -LiteralPath $s.Source -Destination $s.Destination -Force
+    }else{
+        [IO.File]::WriteAllText($s.Destination,$converted,$Utf8NoBom)
+    }
 }
 
 $aliasDest=Join-Path $OverlayRoot 'media\scripts\PZ42MPCompat_aliases.txt'
@@ -205,7 +217,7 @@ $info=@(
 "id=$OverlayId",
 'description=Generated compatibility overrides for the tested B42.21 multiplayer mod stack.',
 "versionMin=$TargetVersion",
-'modversion=1.0.0'
+'modversion=1.1.0'
 ) -join "`r`n"
 [IO.File]::WriteAllText((Join-Path $OverlayRoot 'mod.info'),$info+"`r`n",$Utf8NoBom)
 

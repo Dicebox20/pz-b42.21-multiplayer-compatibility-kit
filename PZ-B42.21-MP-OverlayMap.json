@@ -286,5 +286,29 @@
         "ModFolder":  "KI5campers",
         "LoadRoot":  "42.20",
         "Relative":  "media\\scripts\\vehicles\\Trailer87Scamp16.txt"
+    },
+    {
+        "WorkshopId":  "3616176188",
+        "ModFolder":  "GaelGunStore",
+        "LoadRoot":  "42",
+        "Relative":  "media\\lua\\shared\\GGS_DynamicAmmo.lua"
+    },
+    {
+        "WorkshopId":  "3616176188",
+        "ModFolder":  "GaelGunStore",
+        "LoadRoot":  "42",
+        "Relative":  "media\\lua\\shared\\GGS_ManualRackOption.lua"
+    },
+    {
+        "WorkshopId":  "3616176188",
+        "ModFolder":  "GaelGunStore",
+        "LoadRoot":  "42",
+        "Relative":  "media\\lua\\shared\\GGS_ReloadAnimCompat.lua"
+    },
+    {
+        "WorkshopId":  "3659823175",
+        "ModFolder":  "MutipleSafehouseClaims_HDRcade",
+        "LoadRoot":  "42",
+        "Relative":  "media\\lua\\client\\MyMultiClaim_Client.lua"
     }
 ]

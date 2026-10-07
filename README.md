@@ -24,6 +24,8 @@ What is ported
 - W900 modversion metadata.
 - GaelGunStore effect preset installation.
 - GaelGunStore multiplayer require path fixes.
+- GaelGunStore B42.21 client/shared load-order fixes for Dynamic Ammo, Manual Rack, and grenade-launcher reload compatibility.
+- Multiple Safehouse Claims B42.21 UI path fixes; obsolete HaloTextHelper Lua import removed while preserving the Java-exposed HaloTextHelper API.
 - B42 vehicle GloveBox container fixes, including Papa_Chad "contanier" typos and KI5 camper omissions.
 - Additional tested B42 vehicle-script/runtime fixes.
 - Hosted-server Workshop cache handling.
@@ -39,7 +41,10 @@ PZ-B42.21-MP-Overlay.ps1
   Builds/restores the PZ42MPCompat local override mod.
 
 PZ-B42.21-MP-OverlayMap.json
-  Metadata map identifying the 48 Workshop source files used to rebuild the overlay.
+  Metadata map identifying the 52 Workshop source files used to rebuild the overlay.
+
+PZ42MPCompat-Transforms.ps1
+  Deterministic B42.21 text transforms applied to selected Workshop-owned Lua sources while rebuilding the overlay.
 
 PZ42MPCompat_aliases.txt
   Small compatibility alias/template file created for this port.
@@ -62,21 +67,21 @@ Tested state
 ------------
 Source machine: Windows, Project Zomboid stable 42.21.
 Final core Audit: 0 planned changes.
-Final overlay Audit: content current=True, server profile current=True.
-Real Steam-hosted coop server log after port: 27 mod loads, 0 ERROR lines, 0 exception/stack lines, 0 client-command errors, 0 server-command errors.
-Targeted failures in real hosted coop log after port:
-  NetChecksum null-path: 0
-  Missing client/server files: 0
-  Checksum mismatch: 0
-  GloveBox key-spawn NPE: 0
-  GGS_FactoryPresets warning: 0
-  GGS_LootMagazineRules warning: 0
+Final overlay Audit after the 1.1.0 API-transform staging: 52/52 mapped sources, content current=True, server profile current=True.
+Live Steam-hosted coop testing confirmed Rujiel and Dyscid both fully connected as admins. After Dyscid's successful full connection, the server recorded 0 new runtime errors, 0 exceptions, 0 Lua warnings, 0 packet-limit warnings, and 0 checksum failures.
+Targeted multiplayer failures remain at 0 for:
+  NetChecksum null-path
+  Missing client/server files
+  Checksum mismatch
+  GloveBox key-spawn NPE
+  GGS_FactoryPresets warning
+  GGS_LootMagazineRules warning
 
-Remaining warnings are primarily missing optional/world-item meshes. Those can produce invisible dropped/world-item models, but they are not multiplayer authority/checksum failures.
+Startup still produces Build 42/mod scan noise, including optional AnimSets/actiongroups path probes and vanilla worldgen/map warnings. These are tracked separately from live-play failures.
 
 Important validation note
 -------------------------
-The real Steam-hosted server side is clean after the port. The host client's latest console.txt available during development was from the pre-patch session, so a fresh post-patch player join is still the final runtime confirmation for client-side visuals/gameplay. The Verify launcher is included specifically for that follow-up.
+The 1.1.0 API/load-order transforms are staged for the next process start and have passed static transform/audit verification. A fresh host/client restart is still required to prove that the corrected GaelGunStore and Multiple Safehouse Claims imports load without the prior require warnings. All multiplayer clients must regenerate the same PZ42MPCompat overlay before that restart so Lua checksums remain matched.
 
 Live-play diagnostic
 --------------------
