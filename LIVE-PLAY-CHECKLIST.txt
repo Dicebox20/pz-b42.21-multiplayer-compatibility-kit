@@ -1,0 +1,79 @@
+PZ B42.21 LIVE MULTIPLAYER TEST CHECKLIST
+
+Start
+-----
+1. Close any old diagnostic window.
+2. Double-click 06-Live-Play-Diagnostic.cmd.
+3. Start/host the multiplayer world.
+4. Join as a player.
+5. Exercise the tests below.
+6. After finishing each module family, return to the diagnostic window and press its number: 1 Papa_Chad, 2 KI5/DAMN, 3 TsarLib, 4 GaelGunStore, 5 W900, 6 PZ42MPCompat.
+7. When all testing is finished, press Q.
+8. Open the report path printed at the end.
+
+Papa_Chad vehicles
+------------------
+- Spawn or find at least one patched Papa_Chad vehicle.
+- Enter it.
+- Open the glovebox.
+- Check that a key can appear/be handled without an exception.
+- Start the vehicle.
+- Drive it.
+- Open vehicle storage.
+- For turret/armed vehicles, exercise the normal interaction if available.
+
+KI5 / DAMN
+-----------
+- Use at least one KI5 camper.
+- Open its glovebox.
+- Open interior/exterior storage.
+- Attach/detach or interact with a supported vehicle part if practical.
+- Drive/tow it if applicable.
+
+TsarLib
+-------
+- Exercise at least one vehicle interaction that depends on TsarLib.
+- Open a TsarLib-backed storage/part UI.
+- Install/remove a supported part if practical.
+
+GaelGunStore
+------------
+- Equip a Gael firearm.
+- Load a magazine/ammo.
+- Reload.
+- Manually rack if supported.
+- Fire.
+- Unload/reload again.
+- If available, test weapon upgrade/factory preset behavior.
+- If available, test tracer ammunition.
+
+W900 Semi-Truck
+---------------
+- Spawn/find the W900.
+- Enter and start it.
+- Drive it.
+- Open its storage.
+- Attach/detach a trailer if available.
+
+Network / reconnect
+-------------------
+- Have at least one client join.
+- Move/use inventory.
+- Disconnect normally.
+- Reconnect.
+- Repeat one mod interaction after reconnect.
+
+PASS TARGETS
+------------
+- Core and overlay audits remain clean.
+- 0 checksum mismatches.
+- 0 "File doesn't exist on client/server" errors.
+- 0 BaseVehicle GloveBox key-spawn exceptions.
+- 0 GGS_FactoryPresets / GGS_LootMagazineRules require failures.
+- 0 new Lua/server-command/client-command exceptions attributable to these modules.
+
+Interpretation
+--------------
+"ACTIVITY OBSERVED" means the module appeared in new live-play log traffic without a targeted error.
+"NOT OBSERVED" does NOT mean broken. It means that session did not generate identifiable log traffic for that module.
+For a module to be considered tested, perform its checklist actions even if the log remains quiet.

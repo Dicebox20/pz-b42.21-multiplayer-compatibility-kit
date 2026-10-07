@@ -77,3 +77,26 @@ Remaining warnings are primarily missing optional/world-item meshes. Those can p
 Important validation note
 -------------------------
 The real Steam-hosted server side is clean after the port. The host client's latest console.txt available during development was from the pre-patch session, so a fresh post-patch player join is still the final runtime confirmation for client-side visuals/gameplay. The Verify launcher is included specifically for that follow-up.
+
+Live-play diagnostic
+--------------------
+Run 06-Live-Play-Diagnostic.cmd before hosting/joining. It watches only new client/server log lines created during that play session and writes TXT + JSON reports under:
+  %USERPROFILE%\Zomboid\LiveModuleDiagnostics\<timestamp>\
+
+During play, press these keys in the diagnostic window after you have exercised each module family:
+  1 Papa_Chad
+  2 KI5/DAMN
+  3 TsarLib
+  4 GaelGunStore
+  5 W900
+  6 PZ42MPCompat
+Press Q when finished.
+
+The report distinguishes:
+- TESTED CLEAN: manually exercised, with no targeted issue attributed to that module.
+- ACTIVITY OBSERVED: module-specific live log activity was seen without a targeted issue.
+- ISSUES OBSERVED: a targeted problem was attributed to that module.
+- NOT OBSERVED: no identifiable live log activity was seen; this is not automatically a failure.
+- REVIEW: unrelated/unattributed runtime errors that should be inspected but do not automatically fail a module.
+
+Use LIVE-PLAY-CHECKLIST.txt so each module family is deliberately exercised.
